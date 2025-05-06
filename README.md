@@ -27,3 +27,5 @@ Sigue estos pasos para ejecutar el proyecto en tu máquina local:
 1. Clona este repositorio:
    ```bash
    git clone https://github.com/tu-usuario/tres-en-raya.git
+
+   Este proyecto fue inspirado por [midudev](https://www.youtube.com/watch?v=qkzcjwnueLA&list=PLUofhDIg_38q4D0xNWp7FEHOTcZhjWJ29&index=2&ab_channel=midulive).
