@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
+import './App.css'  // Aquí va el CSS que me pasaste
 
-// Constantes para los turnos
 const TURNS = {
-  X: 'x',
-  O: 'o',
+  X: 'X',
+  O: 'O',
 }
 
-// Combinaciones ganadoras del juego
 const WINNING_COMBINATIONS = [
   [0, 1, 2],
   [3, 4, 5],
@@ -18,14 +17,9 @@ const WINNING_COMBINATIONS = [
   [2, 4, 6],
 ]
 
-import './App.css'
-
-// Componente Square: Representa cada casilla del tablero
 const Square = ({ children, isSelected, updateBoard, index }) => {
-  // Clase CSS dinámica para resaltar la casilla seleccionada
   const className = `square ${isSelected ? 'is-selected' : ''}`
 
-  // Maneja el clic en la casilla
   const handleClick = () => {
     updateBoard(index)
   }
@@ -37,20 +31,14 @@ const Square = ({ children, isSelected, updateBoard, index }) => {
   )
 }
 
-// Componente principal del juego
 function App() {
-  // Estado del tablero (9 casillas vacías al inicio)
   const [board, setBoard] = useState(Array(9).fill(null))
-  // Estado del turno actual (X comienza)
   const [turn, setTurn] = useState(TURNS.X)
-  // Estado del ganador (null al inicio)
   const [winner, setWinner] = useState(null)
 
-  // Función para verificar si hay un ganador
   const checkWinner = (boardToCheck) => {
-    for (const combination of WINNING_COMBINATIONS) {
-      const [a, b, c] = combination
-      // Si las tres casillas de una combinación son iguales, hay un ganador
+    for (const combo of WINNING_COMBINATIONS) {
+      const [a, b, c] = combo
       if (
         boardToCheck[a] &&
         boardToCheck[a] === boardToCheck[b] &&
@@ -59,67 +47,58 @@ function App() {
         return boardToCheck[a]
       }
     }
-    return null // Si no hay ganador, retorna null
+    return null
   }
 
-  // Reinicia el juego
   const resetGame = () => {
-    setBoard(Array(9).fill(null)) // Limpia el tablero
-    setTurn(TURNS.X) // Reinicia el turno a X
-    setWinner(null) // Limpia el ganador
+    setBoard(Array(9).fill(null))
+    setTurn(TURNS.X)
+    setWinner(null)
   }
 
-  // Actualiza el tablero al hacer clic en una casilla
   const updateBoard = (index) => {
-    // Si la casilla ya está ocupada o hay un ganador, no hace nada
     if (board[index] || winner) return
 
-    // Crea una copia del tablero y actualiza la casilla seleccionada
     const newBoard = [...board]
     newBoard[index] = turn
     setBoard(newBoard)
 
-    // Verifica si hay un ganador con el nuevo tablero
     const newWinner = checkWinner(newBoard)
     if (newWinner) {
-      setWinner(newWinner) // Actualiza el ganador
+      setWinner(newWinner)
+    } else if (!newBoard.includes(null)) {
+      setWinner(false)  // empate con false
     } else {
-      // Cambia el turno al siguiente jugador
       setTurn(turn === TURNS.X ? TURNS.O : TURNS.X)
     }
   }
 
   return (
     <main className='board'>
-      <h1>Tic Tac Toe</h1>
-      {/* Tablero del juego */}
+      <h1>3 en Raya</h1>
       <section className='game'>
-        {board.map((_, index) => {
-          return (
-            <Square
-              key={index} // Clave única para cada casilla
-              index={index} // Índice de la casilla
-              updateBoard={updateBoard} // Función para actualizar el tablero
-            >
-              {board[index]} {/* Contenido de la casilla (X, O o vacío) */}
-            </Square>
-          )
-        })}
+        {board.map((_, i) => (
+          <Square key={i} index={i} updateBoard={updateBoard}>
+            {board[i]}
+          </Square>
+        ))}
       </section>
-      {/* Indicador del turno actual */}
+
       <section className='turn'>
         <Square isSelected={turn === TURNS.X}>{TURNS.X}</Square>
         <Square isSelected={turn === TURNS.O}>{TURNS.O}</Square>
       </section>
-      {/* Mensaje del ganador y botón para reiniciar */}
-      {winner && (
+
+      {winner !== null && (
         <section className='winner'>
-          <h2>
-            {winner === TURNS.X || winner === TURNS.O
-              ? `Ganador: ${winner}` // Muestra el ganador
-              : 'Empate'} // En caso de empate
-          </h2>
-          <button onClick={resetGame}>Reiniciar</button>
+          <div className='text'>
+            <h2>
+              {winner === false
+                ? 'Empate!'
+                : `Ganador: ${winner}`}
+            </h2>
+            <button onClick={resetGame}>Reiniciar</button>
+          </div>
         </section>
       )}
     </main>
