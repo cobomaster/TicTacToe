@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './App.css'  // Aquí va el CSS que me pasaste
+import './index.css' 
 
 const TURNS = {
   X: 'X',
